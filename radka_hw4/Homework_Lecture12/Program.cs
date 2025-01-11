@@ -71,6 +71,10 @@ class Program
                 Console.WriteLine($"Teplota: {weather.Current.TempC} °C");
                 Console.WriteLine($"Pocitová teplota: {weather.Current.FeelsLikeC} °C");
                 Console.WriteLine($"Podmínky: {weather.Current.Condition.Text}");
+                Console.WriteLine($"Vítr: {weather.Current.WindKph} km/h");
+                Console.WriteLine($"Směr větru: {weather.Current.WindDir}");
+                Console.WriteLine($"Tlak: {weather.Current.PressureMb} hPa");
+                Console.WriteLine($"Vlhkost: {weather.Current.Humidity} %");
                 Console.WriteLine("================");
             }
             else
