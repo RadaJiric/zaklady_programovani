@@ -1,11 +1,23 @@
 ﻿
 
+using System.Text.Json.Serialization;
+
 namespace Homework_Lecture12
 {
+
     public class Location
     {
-        public string Name;
-        public string Country;
-        public string Localtime;
+        [JsonPropertyName("name")]
+
+        public string Name { get; set; }
+
+        [JsonPropertyName("region")]
+
+        public string Region { get; set; }
+
+
+        [JsonPropertyName("country")]
+
+        public string Country { get; set; }
     }
 }

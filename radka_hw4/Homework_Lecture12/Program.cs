@@ -4,72 +4,84 @@ using System.Text.Json;
 namespace Homework_Lecture12;
 
 class Program
+
 {
     private const string ApiKey = "a5057b9ed5474531b6c213148250501";
     private const string BaseUrl = "http://api.weatherapi.com/v1/current.json";
 
     static async Task Main(string[] args)
     {
-        Console.Write("Zadejte název města: ");
+        Console.WriteLine("Zadejte město pro získání počasí:");
         string city = Console.ReadLine();
+
+        if (string.IsNullOrWhiteSpace(city))
+        {
+            Console.WriteLine("Neplatné zadání města.");
+            return;
+        }
 
         try
         {
-            WeatherResponse weather = await GetWeatherAsync(city);
-            if (weather != null)
+            string weatherData = await FetchWeatherDataAsync(city);
+            if (!string.IsNullOrEmpty(weatherData))
             {
-                DisplayWeather(weather);
+                ProcessWeatherData(weatherData);
             }
             else
             {
-                Console.WriteLine("Nepodařilo se načíst počasí.");
+                Console.WriteLine("Nepodařilo se získat data o počasí.");
             }
-        }
-        catch (HttpRequestException ex)
-        {
-            Console.WriteLine($"Chyba HTTP: {ex.Message}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Neočekávaná chyba: {ex.Message}");
+            Console.WriteLine($"Došlo k chybě: {ex.Message}");
         }
     }
 
-    private static async Task<WeatherResponse> GetWeatherAsync(string city)
+
+
+    private static async Task<string> FetchWeatherDataAsync(string city)
     {
         using HttpClient client = new HttpClient();
         string url = $"{BaseUrl}?key={ApiKey}&q={city}&aqi=no";
 
         HttpResponseMessage response = await client.GetAsync(url);
-        response.EnsureSuccessStatusCode();
 
-        string responseBody = await response.Content.ReadAsStringAsync();
-        Console.WriteLine("API Response:");
-        Console.WriteLine(responseBody);
-
-        WeatherResponse weather = JsonSerializer.Deserialize<WeatherResponse>(responseBody, new JsonSerializerOptions
+        if (response.IsSuccessStatusCode)
         {
-            PropertyNameCaseInsensitive = true
-        });
-
-        return weather;
-    }
-
-    private static void DisplayWeather(WeatherResponse weather)
-    {
-        if (weather?.Location == null || weather.Current == null)
-        {
-            Console.WriteLine("Incomplete weather data.");
-            return;
+            return await response.Content.ReadAsStringAsync();
         }
 
-        Console.WriteLine("\n--- Aktuální počasí ---");
-        Console.WriteLine($"Město: {weather.Location.Name}, {weather.Location.Country}");
-        Console.WriteLine($"Čas: {weather.Location.Localtime}");
-        Console.WriteLine($"Teplota: {weather.Current.Temp_C} °C");
-        Console.WriteLine($"Vítr: {weather.Current.Wind_Kph} km/h");
-        Console.WriteLine($"Vlhkost: {weather.Current.Humidity}%");
-        Console.WriteLine($"Podmínky: {weather.Current.Condition.Text}");
+        Console.WriteLine($"Chyba při stahování dat: {response.StatusCode}");
+        return null;
+    }
+
+    private static void ProcessWeatherData(string jsonData)
+    {
+        try
+        {
+
+
+            var weather = JsonSerializer.Deserialize<WeatherResponse>(jsonData);
+
+            if (weather != null && weather.Current != null && weather.Location != null)
+            {
+                Console.WriteLine("=== Počasí ===");
+                Console.WriteLine($"Místo: {weather.Location.Name}, {weather.Location.Country}");
+                Console.WriteLine($"Teplota: {weather.Current.TempC} °C");
+                Console.WriteLine($"Pocitová teplota: {weather.Current.FeelsLikeC} °C");
+                Console.WriteLine($"Podmínky: {weather.Current.Condition.Text}");
+                Console.WriteLine("================");
+            }
+            else
+            {
+                Console.WriteLine("Nepodařilo se zpracovat data o počasí.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Chyba při zpracování dat: {ex.Message}");
+        }
     }
 }
 

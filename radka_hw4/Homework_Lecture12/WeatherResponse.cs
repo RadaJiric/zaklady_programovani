@@ -1,13 +1,28 @@
 ﻿
 
+using System.Text.Json.Serialization;
+
 namespace Homework_Lecture12
 {
-    public class WeatherResponse
-    {
-        public Location Location;
-        public Current Current;
-    }
+   
 
+  
+    
+        public class WeatherResponse
+        {
+
+
+
+            [JsonPropertyName("location")]
+            public Location Location { get; set; }
+
+            [JsonPropertyName("current")]
+            public Current Current { get; set; }
+
+        }
+    
 }
+
+
 
     

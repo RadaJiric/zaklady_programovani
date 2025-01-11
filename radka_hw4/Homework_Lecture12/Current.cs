@@ -1,12 +1,23 @@
 ﻿
 
+using System.Text.Json.Serialization;
+
 namespace Homework_Lecture12
 {
     public class Current
     {
-        public double Temp_C;
-        public double Wind_Kph;
-        public int Humidity;
-        public Condition Condition;
+        
+        
+            [JsonPropertyName("temp_c")]
+            public double TempC { get; set; }
+
+            [JsonPropertyName("feelslike_c")]
+            public double FeelsLikeC { get; set; }
+
+            [JsonPropertyName("condition")]
+            public Condition Condition { get; set; }
+
+            
+        
     }
 }
