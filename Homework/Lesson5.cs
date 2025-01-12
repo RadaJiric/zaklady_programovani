@@ -6,6 +6,14 @@
         
             public static void Run()
             {
+            
+            ZpracujUzivatele();
+            ZpracujUzivatele();
+
+            }
+
+        private static void ZpracujUzivatele()
+        {
                 Console.WriteLine("Zadejte své údaje:");
 
                 
