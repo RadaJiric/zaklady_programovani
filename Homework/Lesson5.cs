@@ -12,7 +12,7 @@
 
             }
 
-        private static void ZpracujUzivatele()
+        public static void ZpracujUzivatele()
         {
                 Console.WriteLine("Zadejte své údaje:");
 
